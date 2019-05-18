@@ -44,8 +44,10 @@ public class Lexer {
             } else if (isElseSign(charAt(i))) {
                 tokenEnd = i + 1;
                 tokens.add(new Token(substring(i, i + 1), TokenType.ELSE_SIGN));
-            }
-            else if (isThenSign(charAt(i))) {
+            } else if (isDelimiter(charAt(i))) {
+                tokenEnd = i + 1;
+                tokens.add(new Token(substring(i, i + 1), TokenType.DELIMITER));
+            } else if (isThenSign(charAt(i))) {
                 tokenEnd = i + 1;
                 tokens.add(new Token(substring(i, i + 1), TokenType.THEN_SIGN));
             } else {

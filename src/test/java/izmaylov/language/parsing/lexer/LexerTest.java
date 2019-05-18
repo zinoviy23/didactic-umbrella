@@ -137,4 +137,28 @@ public class LexerTest {
         assertEquals(TokenType.NUMBER, res.get(9).getType());
         assertEquals(TokenType.RIGHT_BRACE, res.get(10).getType());
     }
+
+    @Test
+    public void functionDef() {
+        Lexer lexer = new Lexer();
+
+        List<Token> res = lexer.tokenize("sum(a,b)={(a+b)}");
+
+        assertEquals(14, res.size());
+
+        assertEquals(TokenType.IDENTIFIER, res.get(0).getType());
+        assertEquals(TokenType.LEFT_PARENTHESIS, res.get(1).getType());
+        assertEquals(TokenType.IDENTIFIER, res.get(2).getType());
+        assertEquals(TokenType.DELIMITER, res.get(3).getType());
+        assertEquals(TokenType.IDENTIFIER, res.get(4).getType());
+        assertEquals(TokenType.RIGHT_PARENTHESIS, res.get(5).getType());
+        assertEquals(TokenType.OPERATION, res.get(6).getType());
+        assertEquals(TokenType.LEFT_BRACE, res.get(7).getType());
+        assertEquals(TokenType.LEFT_PARENTHESIS, res.get(8).getType());
+        assertEquals(TokenType.IDENTIFIER, res.get(9).getType());
+        assertEquals(TokenType.OPERATION, res.get(10).getType());
+        assertEquals(TokenType.IDENTIFIER, res.get(11).getType());
+        assertEquals(TokenType.RIGHT_PARENTHESIS, res.get(12).getType());
+        assertEquals(TokenType.RIGHT_BRACE, res.get(13).getType());
+    }
 }

@@ -6,6 +6,7 @@ public enum TokenType {
     LEFT_SQUARE_BRACKET, RIGHT_SQUARE_BRACKET,
     LEFT_BRACE, RIGHT_BRACE,
     THEN_SIGN, ELSE_SIGN,
+    DELIMITER,
     EOL;
 
     public static boolean isOpenBracket(TokenType tokenType) {

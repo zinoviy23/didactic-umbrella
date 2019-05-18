@@ -59,5 +59,9 @@ class LexerUtils {
         return c == ':';
     }
 
+    static boolean isDelimiter(char c) {
+        return c == ',';
+    }
+
     private LexerUtils() {}
 }
