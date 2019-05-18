@@ -1,6 +1,6 @@
 package izmaylov.language.parsing;
 
-import izmaylov.language.parsing.interpreter.Interpreter;
+import izmaylov.language.parsing.interpreter.*;
 import izmaylov.language.parsing.lexer.Lexer;
 import izmaylov.language.parsing.lexer.LexerErrorException;
 import izmaylov.language.parsing.lexer.Token;
@@ -21,10 +21,10 @@ public class Main {
 
         String code = reader.lines().collect(Collectors.joining("\n"));
 
-        Lexer lexer = new Lexer();
-        List<Token> tokens = lexer.tokenize(code);
-
         try {
+            Lexer lexer = new Lexer();
+            List<Token> tokens = lexer.tokenize(code);
+
             Parser parser = new Parser();
             Program program = parser.parse(tokens);
 
@@ -32,6 +32,14 @@ public class Main {
             System.out.println("output: " + interpreter.execute(program));
         } catch (SyntaxErrorException | LexerErrorException e) {
             System.out.println("SYNTAX ERROR");
+        } catch (UnknownParameterException e) {
+            System.out.printf("PARAMETER NOT FOUND %s:%d\n", e.getName(), e.getLineNumber());
+        } catch (UnknownFunctionException e) {
+            System.out.printf("FUNCTION NOT FOUND %s:%d\n", e.getFunctionName(), e.getLineNumber());
+        } catch (ArgumentsNumberMismatchException e) {
+            System.out.printf("ARGUMENT NUMBER MISMATCH %s:%d\n", e.getFunctionName(), e.getLineNumber());
+        } catch (RuntimeErrorException e) {
+            System.out.printf("RUNTIME ERROR %s:%d\n", e.getExpression(), e.getLineNumber());
         }
     }
 }

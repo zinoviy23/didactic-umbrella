@@ -1,7 +1,8 @@
 package izmaylov.language.parsing;
 
-import izmaylov.language.parsing.interpreter.Interpreter;
+import izmaylov.language.parsing.interpreter.*;
 import izmaylov.language.parsing.lexer.Lexer;
+import izmaylov.language.parsing.lexer.LexerErrorException;
 import izmaylov.language.parsing.parser.Parser;
 import izmaylov.language.parsing.parser.SyntaxErrorException;
 import org.junit.Test;
@@ -77,5 +78,39 @@ public class IntegrationTests {
                 "sq(a)={(a*a)}\n" +
                 "helper(pw,a,b)={[((b%2)=1)]?{(pw*a)}:{pw}}\n" +
                 "pow(2,11)", 2048);
+    }
+
+    @Test(expected = LexerErrorException.class)
+    public void lexerError() throws SyntaxErrorException {
+        execute("1 + 2 + 3 + 4 + 5", 1);
+    }
+
+    @Test(expected = SyntaxErrorException.class)
+    public void syntaxError() throws SyntaxErrorException {
+        execute("1+2", 3);
+    }
+
+    @Test(expected = UnknownParameterException.class)
+    public void parameterNotFound() throws SyntaxErrorException {
+        execute("f(x)={y}\n" +
+                "f(10)", 12);
+    }
+
+    @Test(expected = UnknownFunctionException.class)
+    public void functionNotFound() throws SyntaxErrorException {
+        execute("g(x)={f(x)}\n" +
+                "g(10)", 10);
+    }
+
+    @Test(expected = ArgumentsNumberMismatchException.class)
+    public void mismatch() throws SyntaxErrorException {
+        execute("g(x)={(x+1)}\n" +
+                "g(10,20)", 13);
+    }
+
+    @Test(expected = RuntimeErrorException.class)
+    public void runtimeError() throws SyntaxErrorException {
+        execute("g(a,b)={(a/b)}\n" +
+                "g(10,0)", 3);
     }
 }
