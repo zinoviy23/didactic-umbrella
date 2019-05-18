@@ -1,11 +1,9 @@
 package izmaylov.language.parsing.interpreter;
 
-import izmaylov.language.parsing.parser.ast.BinaryExpression;
-import izmaylov.language.parsing.parser.ast.ConstantExpression;
-import izmaylov.language.parsing.parser.ast.IfExpression;
-import izmaylov.language.parsing.parser.ast.Program;
+import izmaylov.language.parsing.parser.ast.*;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.Assert.*;
@@ -91,5 +89,33 @@ public class InterpreterTest {
         int result = interpreter.execute(new Program(expression, Collections.emptyList()));
 
         assertEquals(1, result);
+    }
+
+    @Test
+    public void simpleProgramWithFunction() {
+        FunctionDefinition functionDefinition = new FunctionDefinition(
+            "sum",
+                Arrays.asList("a", "b"),
+                new BinaryExpression(
+                        new Identifier("a"),
+                        new Identifier("b"),
+                        "+"
+                )
+        );
+
+        Interpreter interpreter = new Interpreter();
+        int result = interpreter.execute(new Program(new BinaryExpression(
+                new CallExpression(
+                        "sum",
+                        Arrays.asList(
+                                new ConstantExpression(false, 1),
+                                new ConstantExpression(false,2)
+                        )
+                ),
+                new ConstantExpression(true, 10),
+                "*"
+            ), Collections.singletonList(functionDefinition)));
+
+        assertEquals(-30, result);
     }
 }

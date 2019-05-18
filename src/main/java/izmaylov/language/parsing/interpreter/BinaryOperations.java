@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.IntBinaryOperator;
 
-public class BinaryOperations {
+class BinaryOperations {
     private static Map<String, IntBinaryOperator> operations = new HashMap<>();
 
     static {
@@ -18,7 +18,7 @@ public class BinaryOperations {
         operations.put("<", (a, b) -> a < b ? 1 : 0);
     }
 
-    public static IntBinaryOperator getOperation(String operation) {
+    static IntBinaryOperator getOperation(String operation) {
         return operations.get(operation);
     }
 
