@@ -1,9 +1,9 @@
-package izmaylov.language.parsing;
+package izmaylov.language.parsing.interpreter;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExecutionContext {
+public class StackFrame {
     private Map<String, Integer> variables = new HashMap<>();
 
     public int getVariable(String name) {
