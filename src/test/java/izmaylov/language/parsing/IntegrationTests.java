@@ -34,4 +34,14 @@ public class IntegrationTests {
     public void fromTask2() throws SyntaxErrorException {
         execute("(2+((3*4)/5))", 4);
     }
+
+    @Test
+    public void fromTask3() throws SyntaxErrorException {
+        execute("[((10+20)>(20+10))]?{1}:{0}", 0);
+    }
+
+    @Test
+    public void nestedIf() throws SyntaxErrorException {
+        execute("[(10<20)]?{[(10<15)]?{12}:{18}}:{[(10<5)]?{3}:{8}}", 12);
+    }
 }
