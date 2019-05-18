@@ -13,6 +13,8 @@ public class Parser {
 
     private List<Integer> eolIndices;
 
+    private int currentLine = 1;
+
     public Program parse(List<Token> tokens) throws SyntaxErrorException {
         this.tokens = tokens;
         initializeBracketsMatching();
@@ -51,6 +53,8 @@ public class Parser {
 
             beginIndex = functionDefinition.lastTokenIndex + 2;
             functionDefinitions.add(functionDefinition.result);
+
+            currentLine++;
         }
 
         return new ParsingInfo<>(
@@ -150,7 +154,8 @@ public class Parser {
                 throw new SyntaxErrorException();
 
             return new ParsingInfo<>(
-                    new ConstantExpression(true, Integer.parseInt(tokens.get(beginIndex + 1).getValue())),
+                    new ConstantExpression(true,
+                            Integer.parseInt(tokens.get(beginIndex + 1).getValue()), currentLine),
                     beginIndex + 1
             );
         }
@@ -158,7 +163,8 @@ public class Parser {
         switch (tokens.get(beginIndex).getType()) {
             case NUMBER:
                 return new ParsingInfo<>(
-                        new ConstantExpression(false, Integer.parseInt(tokens.get(beginIndex).getValue())),
+                        new ConstantExpression(false,
+                                Integer.parseInt(tokens.get(beginIndex).getValue()), currentLine),
                         beginIndex
                 );
 
@@ -176,7 +182,7 @@ public class Parser {
                 }
 
                 return new ParsingInfo<>(
-                        new Identifier(tokens.get(beginIndex).getValue()),
+                        new Identifier(tokens.get(beginIndex).getValue(), currentLine),
                         beginIndex
                 );
             }
@@ -210,7 +216,8 @@ public class Parser {
                 new BinaryExpression(
                         leftExpressionInfo.result,
                         rightExpressionInfo.result,
-                        tokens.get(operationIndex).getValue()
+                        tokens.get(operationIndex).getValue(),
+                        currentLine
                 ), endIndex
         );
     }
@@ -252,7 +259,7 @@ public class Parser {
         }
 
         return new ParsingInfo<>(
-                new CallExpression(name, arguments),
+                new CallExpression(name, arguments, currentLine),
                 argumentsEnd
         );
     }
@@ -298,7 +305,7 @@ public class Parser {
         ParsingInfo<Expression> elseBranchInfo = parseBody(elseBegin);
 
         return new ParsingInfo<>(
-                new IfExpression(conditionInfo.result, thenBranchInfo.result, elseBranchInfo.result),
+                new IfExpression(conditionInfo.result, thenBranchInfo.result, elseBranchInfo.result, currentLine),
                 elseBranchInfo.lastTokenIndex
         );
     }

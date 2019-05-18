@@ -1,11 +1,12 @@
 package izmaylov.language.parsing.parser.ast;
 
-public class BinaryExpression implements Expression {
+public class BinaryExpression extends Expression {
     private final Expression leftExpression;
     private final Expression rightExpression;
     private final String operation;
 
-    public BinaryExpression(Expression leftExpression, Expression rightExpression, String operation) {
+    public BinaryExpression(Expression leftExpression, Expression rightExpression, String operation, int lineNumber) {
+        super(lineNumber);
         this.leftExpression = leftExpression;
         this.rightExpression = rightExpression;
         this.operation = operation;
@@ -21,5 +22,10 @@ public class BinaryExpression implements Expression {
 
     public String getOperation() {
         return operation;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + leftExpression + operation + rightExpression + ")";
     }
 }
