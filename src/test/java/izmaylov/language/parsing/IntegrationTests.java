@@ -51,4 +51,31 @@ public class IntegrationTests {
                 "f(x)={[(x>1)]?{(f((x-1))+f((x-2)))}:{x}}\n" +
                 "g(10)", 60);
     }
+
+    @Test
+    public void factorialCheck() throws SyntaxErrorException {
+        execute("f(x)={[(x=0)]?{1}:{(f((x-1))*x)}}\n" +
+                "f(6)", 720);
+    }
+
+    @Test
+    public void fibCycle() throws SyntaxErrorException {
+        execute("f(x)={f_help(x,1,0)}\n" +
+                "f_help(x,a,b)={[(x=0)]?{b}:{f_help((x-1),(a+b),a)}}\n" +
+                "f(12)", 144);
+    }
+
+    @Test
+    public void recursiveSum() throws SyntaxErrorException {
+        execute("sum(a,b)={[(b=0)]?{a}:{(sum(a,(b-1))+1)}}\n" +
+                "sum(100,1000)", 1100);
+    }
+
+    @Test
+    public void recursivePow() throws SyntaxErrorException {
+        execute("pow(a,b)={[(b=0)]?{1}:{helper(sq(pow(a,(b/2))),a,b)}}\n" +
+                "sq(a)={(a*a)}\n" +
+                "helper(pw,a,b)={[((b%2)=1)]?{(pw*a)}:{pw}}\n" +
+                "pow(2,11)", 2048);
+    }
 }
