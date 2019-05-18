@@ -206,10 +206,51 @@ public class ParserTest {
         ));
 
         assertEquals(1, program.getFunctionDefinitions().size());
+        assertEquals("a", program.getFunctionDefinitions().get(0).getName());
         assertEquals(2, program.getFunctionDefinitions().get(0).getParameters().size());
         assertEquals("b", program.getFunctionDefinitions().get(0).getParameters().get(0));
         assertEquals("c", program.getFunctionDefinitions().get(0).getParameters().get(1));
         assertTrue(program.getFunctionDefinitions().get(0).getBody() instanceof ConstantExpression);
+    }
+
+    @Test
+    public void functionCall() throws SyntaxErrorException {
+        Parser parser = new Parser();
+
+        Program program = parser.parse(Arrays.asList(
+                new Token("a", TokenType.IDENTIFIER),
+                new Token("(", TokenType.LEFT_PARENTHESIS),
+                new Token("(", TokenType.LEFT_PARENTHESIS),
+                new Token("1", TokenType.NUMBER),
+                new Token("+", TokenType.OPERATION),
+                new Token("2", TokenType.NUMBER),
+                new Token(")", TokenType.RIGHT_PARENTHESIS),
+                new Token(",", TokenType.DELIMITER),
+                new Token("1", TokenType.NUMBER),
+                new Token(")", TokenType.RIGHT_PARENTHESIS)
+        ));
+
+        assertTrue(program.getExpression() instanceof CallExpression);
+        CallExpression call = (CallExpression) program.getExpression();
+
+        assertEquals("a", call.getName());
+        assertEquals(2, call.getArguments().size());
+        assertTrue(call.getArguments().get(0) instanceof BinaryExpression);
+        assertTrue(call.getArguments().get(1) instanceof ConstantExpression);
+    }
+
+    @Test
+    public void identifier() throws SyntaxErrorException {
+        Parser parser = new Parser();
+
+        Program program = parser.parse(Collections.singletonList(
+                new Token("a", TokenType.IDENTIFIER)
+        ));
+
+        assertTrue(program.getExpression() instanceof Identifier);
+        Identifier identifier = (Identifier) program.getExpression();
+
+        assertEquals("a", identifier.getName());
     }
 
     @Test(expected = SyntaxErrorException.class)

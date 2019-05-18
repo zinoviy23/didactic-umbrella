@@ -166,6 +166,19 @@ public class Parser {
 
             case LEFT_SQUARE_BRACKET:
                 return parseIfExpression(beginIndex);
+
+            case IDENTIFIER: {
+                if (tokens.size() > beginIndex + 1 &&
+                        tokens.get(beginIndex + 1).getType() == TokenType.LEFT_PARENTHESIS) {
+
+                    return parseCallExpression(beginIndex);
+                }
+
+                return new ParsingInfo<>(
+                        new Identifier(tokens.get(beginIndex).getValue()),
+                        beginIndex
+                );
+            }
         }
 
         throw new SyntaxErrorException("Unexpected token: " + tokens.get(beginIndex));
@@ -198,6 +211,48 @@ public class Parser {
                         rightExpressionInfo.result,
                         tokens.get(operationIndex).getValue()
                 ), endIndex
+        );
+    }
+
+    private ParsingInfo<Expression> parseCallExpression(int beginIndex) throws SyntaxErrorException {
+        if (beginIndex + 1 >= tokens.size() || tokens.get(beginIndex + 1).getType() != TokenType.LEFT_PARENTHESIS) {
+            throw new SyntaxErrorException("Expects (");
+        }
+
+        String name = tokens.get(beginIndex).getValue();
+
+        int argumentsEnd = bracketsMatching.get(beginIndex + 1);
+
+        if (argumentsEnd == beginIndex + 2) {
+            throw new SyntaxErrorException("Expects at least one argument");
+        }
+
+        List<Expression> arguments = new ArrayList<>();
+
+        boolean findLast = false;
+        int argumentIndex = beginIndex + 2;
+
+        while (!findLast) {
+            ParsingInfo<Expression> argumentInfo = parseExpression(argumentIndex);
+
+            arguments.add(argumentInfo.result);
+
+            if (argumentsEnd < argumentInfo.lastTokenIndex) {
+                throw new SyntaxErrorException();
+            }
+
+            if (argumentInfo.lastTokenIndex + 1 == argumentsEnd) {
+                findLast = true;
+            } else if (tokens.get(argumentInfo.lastTokenIndex + 1).getType() != TokenType.DELIMITER) {
+                throw new SyntaxErrorException("Expects ,");
+            }
+
+            argumentIndex = argumentInfo.lastTokenIndex + 2;
+        }
+
+        return new ParsingInfo<>(
+                new CallExpression(name, arguments),
+                argumentsEnd
         );
     }
 
