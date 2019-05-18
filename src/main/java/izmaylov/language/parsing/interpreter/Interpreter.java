@@ -42,12 +42,16 @@ public class Interpreter {
     }
 
     private int executeBinaryExpression(BinaryExpression expression) {
-        return BinaryOperations
-                .getOperation(expression.getOperation())
-                .applyAsInt(
-                        execute(expression.getLeftExpression()),
-                        execute(expression.getRightExpression())
-                );
+        try {
+            return BinaryOperations
+                    .getOperation(expression.getOperation())
+                    .applyAsInt(
+                            execute(expression.getLeftExpression()),
+                            execute(expression.getRightExpression())
+                    );
+        } catch (ArithmeticException e) {
+            throw new RuntimeErrorException(expression.getLineNumber(), expression.toString());
+        }
     }
 
     private int executeConstantExpression(ConstantExpression expression) {
@@ -66,7 +70,7 @@ public class Interpreter {
 
     private int executeIdentifier(Identifier expression) {
         if (!context.isVariableExists(expression.getName())) {
-            throw new ExecutionErrorException();
+            throw new UnknownParameterException(expression.getLineNumber(), expression.getName());
         }
 
         return context.getVariableValue(expression.getName());
@@ -78,7 +82,11 @@ public class Interpreter {
         FunctionDefinition definition = functions.get(expression.getName());
 
         if (definition == null) {
-            throw new ExecutionErrorException();
+            throw new UnknownFunctionException(expression.getLineNumber(), expression.getName());
+        }
+
+        if (definition.getParameters().size() != expression.getArguments().size()) {
+            throw new ArgumentsNumberMismatchException(expression.getLineNumber(), expression.getName());
         }
 
         for (int i = 0; i < expression.getArguments().size(); i++) {

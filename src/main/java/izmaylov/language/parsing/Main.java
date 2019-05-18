@@ -2,6 +2,7 @@ package izmaylov.language.parsing;
 
 import izmaylov.language.parsing.interpreter.Interpreter;
 import izmaylov.language.parsing.lexer.Lexer;
+import izmaylov.language.parsing.lexer.LexerErrorException;
 import izmaylov.language.parsing.lexer.Token;
 import izmaylov.language.parsing.parser.Parser;
 import izmaylov.language.parsing.parser.SyntaxErrorException;
@@ -29,8 +30,8 @@ public class Main {
 
             Interpreter interpreter = new Interpreter();
             System.out.println("output: " + interpreter.execute(program));
-        } catch (SyntaxErrorException e) {
-            e.printStackTrace();
+        } catch (SyntaxErrorException | LexerErrorException e) {
+            System.out.println("SYNTAX ERROR");
         }
     }
 }

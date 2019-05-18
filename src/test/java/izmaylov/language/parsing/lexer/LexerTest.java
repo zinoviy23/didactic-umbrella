@@ -113,7 +113,7 @@ public class LexerTest {
 
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(expected = LexerErrorException.class)
     public void unsupportedOperation() {
         new Lexer().tokenize("a b c");
     }
