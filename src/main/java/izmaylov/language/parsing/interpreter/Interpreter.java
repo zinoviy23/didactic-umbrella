@@ -1,9 +1,6 @@
 package izmaylov.language.parsing.interpreter;
 
-import izmaylov.language.parsing.parser.ast.BinaryExpression;
-import izmaylov.language.parsing.parser.ast.ConstantExpression;
-import izmaylov.language.parsing.parser.ast.Expression;
-import izmaylov.language.parsing.parser.ast.Program;
+import izmaylov.language.parsing.parser.ast.*;
 
 public class Interpreter {
     public int execute(Program program) {
@@ -16,6 +13,9 @@ public class Interpreter {
         }
         if (expression instanceof ConstantExpression) {
             return executeConstantExpression((ConstantExpression) expression);
+        }
+        if (expression instanceof IfExpression) {
+            return executeIfExpression((IfExpression) expression);
         }
 
         throw new AssertionError("Cannot be here now");
@@ -34,5 +34,13 @@ public class Interpreter {
         return expression.getMinus()
                 ? -expression.getNumber()
                 : expression.getNumber();
+    }
+
+    private int executeIfExpression(IfExpression expression) {
+        if (execute(expression.getCondition()) != 0) {
+            return execute(expression.getThenBranch());
+        } else {
+            return execute(expression.getElseBranch());
+        }
     }
 }

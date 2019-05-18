@@ -2,6 +2,7 @@ package izmaylov.language.parsing.interpreter;
 
 import izmaylov.language.parsing.parser.ast.BinaryExpression;
 import izmaylov.language.parsing.parser.ast.ConstantExpression;
+import izmaylov.language.parsing.parser.ast.IfExpression;
 import izmaylov.language.parsing.parser.ast.Program;
 import org.junit.Test;
 
@@ -52,5 +53,39 @@ public class InterpreterTest {
         int result = interpreter.execute(new Program(new BinaryExpression(left, right, "/")));
 
         assertEquals(-15, result);
+    }
+
+    @Test
+    public void ifExpressionTrue() {
+        IfExpression expression = new IfExpression(
+                new BinaryExpression(
+                        new ConstantExpression(false, 1),
+                        new ConstantExpression(false, 0),
+                        ">"),
+                new ConstantExpression(true, 1),
+                new ConstantExpression(false, 1)
+        );
+
+        Interpreter interpreter = new Interpreter();
+        int result = interpreter.execute(new Program(expression));
+
+        assertEquals(-1, result);
+    }
+
+    @Test
+    public void ifExpressionFalse() {
+        IfExpression expression = new IfExpression(
+                new BinaryExpression(
+                        new ConstantExpression(false, 1),
+                        new ConstantExpression(false, 0),
+                        "<"),
+                new ConstantExpression(true, 1),
+                new ConstantExpression(false, 1)
+        );
+
+        Interpreter interpreter = new Interpreter();
+        int result = interpreter.execute(new Program(expression));
+
+        assertEquals(1, result);
     }
 }
