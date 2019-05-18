@@ -2,9 +2,7 @@ package izmaylov.language.parsing.parser;
 
 import izmaylov.language.parsing.lexer.Token;
 import izmaylov.language.parsing.lexer.TokenType;
-import izmaylov.language.parsing.parser.ast.BinaryExpression;
-import izmaylov.language.parsing.parser.ast.ConstantExpression;
-import izmaylov.language.parsing.parser.ast.Program;
+import izmaylov.language.parsing.parser.ast.*;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -116,6 +114,76 @@ public class ParserTest {
 
         assertFalse(c2.getMinus());
         assertEquals(200, c2.getNumber());
+    }
+
+    @Test
+    public void ifExpression() throws SyntaxErrorException {
+        Parser parser = new Parser();
+
+        Program program = parser.parse(Arrays.asList(
+                new Token("[", TokenType.LEFT_SQUARE_BRACKET),
+                new Token("1", TokenType.NUMBER),
+                new Token("]", TokenType.RIGHT_SQUARE_BRACKET),
+                new Token("?", TokenType.THEN_SIGN),
+                new Token("{", TokenType.LEFT_BRACE),
+                new Token("0", TokenType.NUMBER),
+                new Token("}", TokenType.RIGHT_BRACE),
+                new Token(":", TokenType.ELSE_SIGN),
+                new Token("{", TokenType.LEFT_BRACE),
+                new Token("-", TokenType.OPERATION),
+                new Token("1", TokenType.NUMBER),
+                new Token("}", TokenType.RIGHT_BRACE)
+        ));
+
+        assertTrue(program.getExpression() instanceof IfExpression);
+
+        IfExpression ifExpression = ((IfExpression) program.getExpression());
+
+        assertTrue(ifExpression.getCondition() instanceof ConstantExpression);
+        assertTrue(ifExpression.getThenBranch() instanceof ConstantExpression);
+        assertTrue(ifExpression.getElseBranch() instanceof ConstantExpression);
+
+        ConstantExpression condition = (ConstantExpression) ifExpression.getCondition();
+        ConstantExpression thenBranch = (ConstantExpression) ifExpression.getThenBranch();
+        ConstantExpression elseBranch = (ConstantExpression) ifExpression.getElseBranch();
+
+        assertFalse(condition.getMinus());
+        assertFalse(thenBranch.getMinus());
+        assertTrue(elseBranch.getMinus());
+
+        assertEquals(1, condition.getNumber());
+        assertEquals(1, elseBranch.getNumber());
+        assertEquals(0, thenBranch.getNumber());
+    }
+
+    @Test
+    public void ifExpressionAsChild() throws SyntaxErrorException {
+        Parser parser = new Parser();
+
+        Program program = parser.parse(Arrays.asList(
+                new Token("(", TokenType.LEFT_PARENTHESIS),
+                new Token("[", TokenType.LEFT_SQUARE_BRACKET),
+                new Token("1", TokenType.NUMBER),
+                new Token("]", TokenType.RIGHT_SQUARE_BRACKET),
+                new Token("?", TokenType.THEN_SIGN),
+                new Token("{", TokenType.LEFT_BRACE),
+                new Token("0", TokenType.NUMBER),
+                new Token("}", TokenType.RIGHT_BRACE),
+                new Token(":", TokenType.ELSE_SIGN),
+                new Token("{", TokenType.LEFT_BRACE),
+                new Token("-", TokenType.OPERATION),
+                new Token("1", TokenType.NUMBER),
+                new Token("}", TokenType.RIGHT_BRACE),
+                new Token("*", TokenType.OPERATION),
+                new Token("1", TokenType.NUMBER),
+                new Token(")", TokenType.RIGHT_PARENTHESIS)
+        ));
+
+        assertTrue(program.getExpression() instanceof BinaryExpression);
+        BinaryExpression binaryExpression = (BinaryExpression) program.getExpression();
+
+        assertTrue(binaryExpression.getRightExpression() instanceof ConstantExpression);
+        assertTrue(binaryExpression.getLeftExpression() instanceof IfExpression);
     }
 
     @Test(expected = SyntaxErrorException.class)

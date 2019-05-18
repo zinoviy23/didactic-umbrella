@@ -2,10 +2,7 @@ package izmaylov.language.parsing.parser;
 
 import izmaylov.language.parsing.lexer.Token;
 import izmaylov.language.parsing.lexer.TokenType;
-import izmaylov.language.parsing.parser.ast.BinaryExpression;
-import izmaylov.language.parsing.parser.ast.ConstantExpression;
-import izmaylov.language.parsing.parser.ast.Expression;
-import izmaylov.language.parsing.parser.ast.Program;
+import izmaylov.language.parsing.parser.ast.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -62,6 +59,9 @@ public class Parser {
 
             case LEFT_PARENTHESIS:
                 return parseBinaryExpression(beginIndex);
+
+            case LEFT_SQUARE_BRACKET:
+                return parseIfExpression(beginIndex);
         }
 
         throw new SyntaxErrorException("Unexpected token: " + tokens.get(beginIndex));
@@ -94,6 +94,78 @@ public class Parser {
                         rightExpressionInfo.result,
                         tokens.get(operationIndex).getValue()
                 ), endIndex
+        );
+    }
+
+    private ParsingInfo parseIfExpression(int beginIndex) throws SyntaxErrorException {
+        if (tokens.get(beginIndex).getType() != TokenType.LEFT_SQUARE_BRACKET) {
+            throw new SyntaxErrorException();
+        }
+
+        int conditionEndIndex = bracketsMatching.get(beginIndex);
+
+        if (conditionEndIndex >= tokens.size() || tokens.get(conditionEndIndex + 1).getType() != TokenType.THEN_SIGN) {
+            throw new SyntaxErrorException("? expected");
+        }
+
+        if (conditionEndIndex == beginIndex - 1) {
+            throw new SyntaxErrorException("Condition cannot be empty");
+        }
+
+        ParsingInfo conditionInfo = parseExpression(beginIndex + 1);
+
+        if (conditionInfo.lastTokenIndex + 1 != conditionEndIndex) {
+            throw new SyntaxErrorException();
+        }
+
+        int thenBegin = conditionEndIndex + 2;
+
+        if (tokens.size() <= thenBegin) {
+            throw new SyntaxErrorException("Expects if body");
+        }
+
+        // In grammar there should be (, but in tests was {, so I choose {
+        if (tokens.get(thenBegin).getType() != TokenType.LEFT_BRACE) {
+            throw new SyntaxErrorException();
+        }
+
+        int thenEnd = bracketsMatching.get(thenBegin);
+
+        if (thenEnd >= tokens.size() || tokens.get(thenEnd + 1).getType() != TokenType.ELSE_SIGN) {
+            throw new SyntaxErrorException();
+        }
+
+        if (thenBegin == thenEnd - 1) {
+            throw new SyntaxErrorException("Body cannot be empty!");
+        }
+
+        ParsingInfo thenBranchInfo = parseExpression(thenBegin + 1);
+
+        if (thenBranchInfo.lastTokenIndex + 1 != thenEnd) {
+            throw new SyntaxErrorException();
+        }
+
+        int elseBegin = thenEnd + 2;
+
+        if (tokens.size() <= elseBegin) {
+            throw new SyntaxErrorException("Expects then body!");
+        }
+
+        if (tokens.get(elseBegin).getType() != TokenType.LEFT_BRACE) {
+            throw new SyntaxErrorException();
+        }
+
+        int elseEnd = bracketsMatching.get(elseBegin);
+
+        ParsingInfo elseBranchInfo = parseExpression(elseBegin + 1);
+
+        if (elseBranchInfo.lastTokenIndex + 1 != elseEnd) {
+            throw new SyntaxErrorException();
+        }
+
+        return new ParsingInfo(
+                new IfExpression(conditionInfo.result, thenBranchInfo.result, elseBranchInfo.result),
+                elseEnd
         );
     }
 
