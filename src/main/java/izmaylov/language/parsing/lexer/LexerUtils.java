@@ -1,7 +1,5 @@
 package izmaylov.language.parsing.lexer;
 
-import jdk.nashorn.internal.parser.Lexer;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,8 +38,25 @@ class LexerUtils {
         return null;
     }
 
+    static TokenType isBrace(char c) {
+        if (c == '{')
+            return TokenType.LEFT_BRACE;
+        else if (c == '}')
+            return TokenType.RIGHT_BRACE;
+
+        return null;
+    }
+
     static boolean isEOL(char c) {
         return c == '\n';
+    }
+
+    static boolean isThenSign(char c) {
+        return c == '?';
+    }
+
+    static boolean isElseSign(char c) {
+        return c == ':';
     }
 
     private LexerUtils() {}

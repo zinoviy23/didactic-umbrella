@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
+import static izmaylov.language.parsing.lexer.LexerUtils.*;
+
 public class Lexer {
     private String currentText;
 
@@ -15,7 +17,7 @@ public class Lexer {
 
         for (int i = 0; i < text.length();) {
             int tokenEnd;
-            if (LexerUtils.isCharacter(charAt(i))) {
+            if (isCharacter(charAt(i))) {
                 tokenEnd = findTokenEnd(i, LexerUtils::isCharacter);
 
                 tokens.add(new Token(substring(i, tokenEnd), TokenType.IDENTIFIER));
@@ -23,19 +25,29 @@ public class Lexer {
                 tokenEnd = findTokenEnd(i, Character::isDigit);
 
                 tokens.add(new Token(substring(i, tokenEnd), TokenType.NUMBER));
-            } else if (LexerUtils.isOperator(charAt(i))) {
+            } else if (isOperator(charAt(i))) {
                 tokenEnd = i + 1;
 
                 tokens.add(new Token(substring(i, i + 1), TokenType.OPERATION));
-            } else if (LexerUtils.isParenthesis(charAt(i)) != null) {
+            } else if (isParenthesis(charAt(i)) != null) {
                 tokenEnd = i + 1;
-                tokens.add(new Token(substring(i, i + 1), LexerUtils.isParenthesis(charAt(i))));
-            } else if (LexerUtils.isSquareBracket(charAt(i)) != null) {
+                tokens.add(new Token(substring(i, i + 1), isParenthesis(charAt(i))));
+            } else if (isSquareBracket(charAt(i)) != null) {
                 tokenEnd = i + 1;
-                tokens.add(new Token(substring(i, i + 1), LexerUtils.isSquareBracket(charAt(i))));
-            } else if (LexerUtils.isEOL(charAt(i))) {
+                tokens.add(new Token(substring(i, i + 1), isSquareBracket(charAt(i))));
+            } else if (isBrace(charAt(i)) != null) {
+                tokenEnd = i + 1;
+                tokens.add(new Token(substring(i, i + 1), isBrace(charAt(i))));
+            } else if (isEOL(charAt(i))) {
                 tokenEnd = i + 1;
                 tokens.add(new Token(substring(i, i + 1), TokenType.EOL));
+            } else if (isElseSign(charAt(i))) {
+                tokenEnd = i + 1;
+                tokens.add(new Token(substring(i, i + 1), TokenType.ELSE_SIGN));
+            }
+            else if (isThenSign(charAt(i))) {
+                tokenEnd = i + 1;
+                tokens.add(new Token(substring(i, i + 1), TokenType.THEN_SIGN));
             } else {
                 throw new UnsupportedOperationException("Unsupported tokens!");
             }
