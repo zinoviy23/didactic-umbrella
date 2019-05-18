@@ -51,7 +51,7 @@ public class Lexer {
                 tokenEnd = i + 1;
                 tokens.add(new Token(substring(i, i + 1), TokenType.THEN_SIGN));
             } else {
-                throw new UnsupportedOperationException("Unsupported tokens!");
+                throw new LexerErrorException("Unsupported tokens");
             }
 
             i = tokenEnd;
