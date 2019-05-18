@@ -83,7 +83,8 @@ public class Parser {
 
         List<String> parameters = new ArrayList<>();
         for (int i = paramsBegin + 1; i < paramsEnd; i++) {
-            if (i % 2 == 0) {
+            int indexFromBegin = i - paramsBegin - 1;
+            if (indexFromBegin % 2 == 0) {
                 if (tokens.get(i).getType() != TokenType.IDENTIFIER) {
                     throw new SyntaxErrorException("Expects an identifier");
                 }
@@ -91,7 +92,7 @@ public class Parser {
                 parameters.add(tokens.get(i).getValue());
             }
 
-            if (i % 2 == 1 && tokens.get(i).getType() != TokenType.DELIMITER) {
+            if (indexFromBegin % 2 == 1 && tokens.get(i).getType() != TokenType.DELIMITER) {
                 throw new SyntaxErrorException("Expects a comma");
             }
         }

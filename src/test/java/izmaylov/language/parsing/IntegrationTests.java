@@ -44,4 +44,11 @@ public class IntegrationTests {
     public void nestedIf() throws SyntaxErrorException {
         execute("[(10<20)]?{[(10<15)]?{12}:{18}}:{[(10<5)]?{3}:{8}}", 12);
     }
+
+    @Test
+    public void fromTask4() throws SyntaxErrorException {
+        execute("g(x)={(f(x)+f((x/2)))}\n" +
+                "f(x)={[(x>1)]?{(f((x-1))+f((x-2)))}:{x}}\n" +
+                "g(10)", 60);
+    }
 }
