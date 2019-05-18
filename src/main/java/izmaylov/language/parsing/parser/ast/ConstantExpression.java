@@ -1,6 +1,6 @@
 package izmaylov.language.parsing.parser.ast;
 
-public class ConstantExpression extends Expression {
+public class ConstantExpression implements Expression {
     private final boolean minus;
     private final int number;
 

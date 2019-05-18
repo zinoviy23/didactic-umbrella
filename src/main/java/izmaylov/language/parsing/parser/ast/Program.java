@@ -1,6 +1,6 @@
 package izmaylov.language.parsing.parser.ast;
 
-public class Program extends ASTNode {
+public class Program {
     private final Expression expression;
 
     public Expression getExpression() {

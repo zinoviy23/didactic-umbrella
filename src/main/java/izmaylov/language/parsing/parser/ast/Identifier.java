@@ -1,6 +1,6 @@
 package izmaylov.language.parsing.parser.ast;
 
-public class Identifier extends Expression {
+public class Identifier implements Expression {
     private final String name;
 
     public Identifier(String name) {

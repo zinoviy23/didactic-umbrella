@@ -1,6 +1,6 @@
 package izmaylov.language.parsing.parser.ast;
 
-public class BinaryExpression extends Expression {
+public class BinaryExpression implements Expression {
     private final Expression leftExpression;
     private final Expression rightExpression;
     private final String operation;
