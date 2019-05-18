@@ -186,6 +186,32 @@ public class ParserTest {
         assertTrue(binaryExpression.getLeftExpression() instanceof IfExpression);
     }
 
+    @Test
+    public void functionsDefinitions() throws SyntaxErrorException {
+        Parser parser = new Parser();
+
+        Program program = parser.parse(Arrays.asList(
+                new Token("a", TokenType.IDENTIFIER),
+                new Token("(", TokenType.LEFT_PARENTHESIS),
+                new Token("b", TokenType.IDENTIFIER),
+                new Token(",", TokenType.DELIMITER),
+                new Token("c", TokenType.IDENTIFIER),
+                new Token(")", TokenType.RIGHT_PARENTHESIS),
+                new Token("=", TokenType.OPERATION),
+                new Token("{", TokenType.LEFT_BRACE),
+                new Token("1", TokenType.NUMBER),
+                new Token("}", TokenType.RIGHT_BRACE),
+                new Token("\n", TokenType.EOL),
+                new Token("1", TokenType.NUMBER)
+        ));
+
+        assertEquals(1, program.getFunctionDefinitions().size());
+        assertEquals(2, program.getFunctionDefinitions().get(0).getParameters().size());
+        assertEquals("b", program.getFunctionDefinitions().get(0).getParameters().get(0));
+        assertEquals("c", program.getFunctionDefinitions().get(0).getParameters().get(1));
+        assertTrue(program.getFunctionDefinitions().get(0).getBody() instanceof ConstantExpression);
+    }
+
     @Test(expected = SyntaxErrorException.class)
     public void syntaxErrorBecauseOfBrackets() throws SyntaxErrorException {
         new Parser().parse(Arrays.asList(

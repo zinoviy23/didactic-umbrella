@@ -6,6 +6,8 @@ import izmaylov.language.parsing.parser.ast.IfExpression;
 import izmaylov.language.parsing.parser.ast.Program;
 import org.junit.Test;
 
+import java.util.Collections;
+
 import static org.junit.Assert.*;
 
 public class InterpreterTest {
@@ -14,7 +16,7 @@ public class InterpreterTest {
         ConstantExpression expression = new ConstantExpression(false, 10);
         
         Interpreter interpreter = new Interpreter();
-        int result = interpreter.execute(new Program(expression));
+        int result = interpreter.execute(new Program(expression, Collections.emptyList()));
         
         assertEquals(10, result);
     }
@@ -24,7 +26,7 @@ public class InterpreterTest {
         ConstantExpression expression = new ConstantExpression(true, 11);
 
         Interpreter interpreter = new Interpreter();
-        int result = interpreter.execute(new Program(expression));
+        int result = interpreter.execute(new Program(expression, Collections.emptyList()));
 
         assertEquals(-11, result);
     }
@@ -35,7 +37,8 @@ public class InterpreterTest {
         ConstantExpression right = new ConstantExpression(false, 10);
 
         Interpreter interpreter = new Interpreter();
-        int result = interpreter.execute(new Program(new BinaryExpression(left, right, "%")));
+        int result = interpreter.execute(new Program(new BinaryExpression(left, right, "%"),
+                Collections.emptyList()));
 
         assertEquals(3, result);
     }
@@ -50,7 +53,8 @@ public class InterpreterTest {
         ConstantExpression right = new ConstantExpression(false, 2);
 
         Interpreter interpreter = new Interpreter();
-        int result = interpreter.execute(new Program(new BinaryExpression(left, right, "/")));
+        int result = interpreter.execute(new Program(new BinaryExpression(left, right, "/"),
+                Collections.emptyList()));
 
         assertEquals(-15, result);
     }
@@ -67,7 +71,7 @@ public class InterpreterTest {
         );
 
         Interpreter interpreter = new Interpreter();
-        int result = interpreter.execute(new Program(expression));
+        int result = interpreter.execute(new Program(expression, Collections.emptyList()));
 
         assertEquals(-1, result);
     }
@@ -84,7 +88,7 @@ public class InterpreterTest {
         );
 
         Interpreter interpreter = new Interpreter();
-        int result = interpreter.execute(new Program(expression));
+        int result = interpreter.execute(new Program(expression, Collections.emptyList()));
 
         assertEquals(1, result);
     }
