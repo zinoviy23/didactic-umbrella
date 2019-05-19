@@ -16,7 +16,7 @@ public class Parser {
     private int currentLine = 1;
 
     public Program parse(List<Token> tokens) throws SyntaxErrorException {
-        this.tokens = tokens;
+        this.tokens = Objects.requireNonNull(tokens, "tokens cannot be null");
         initializeBracketsMatching();
         initializeEolIndices();
 

@@ -4,6 +4,7 @@ import izmaylov.language.parsing.parser.ast.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Interpreter {
@@ -12,6 +13,8 @@ public class Interpreter {
     private ExecutionContext context;
 
     public int execute(Program program) {
+        Objects.requireNonNull(program, "program cannot be null");
+
         functions = program.getFunctionDefinitions()
                 .stream()
                 .collect(Collectors.toMap(FunctionDefinition::getName, f->f));

@@ -1,6 +1,5 @@
 package izmaylov.language.parsing.interpreter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 class StackFrame {

@@ -10,6 +10,11 @@ import static izmaylov.language.parsing.lexer.LexerUtils.*;
 public class Lexer {
     private String currentText;
 
+    /**
+     * Tokenizes string
+     * @param text program code
+     * @return list of tokens
+     */
     public List<Token> tokenize(String text) {
         currentText = Objects.requireNonNull(text, "text cannot be null");
 
